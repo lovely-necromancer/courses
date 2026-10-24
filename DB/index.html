@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Crypto Teaching Atlas</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root{--bg:#0d1120;--bg2:#1a2145;--pn:#171d3a;--ink:#eceffa;--mut:#8f98ba;--ln:#2a3358;--ug:#2dd4bf;--pg:#8b9cff;--adv:#ff7a93;--ok:#34d399;--wn:#fbbf24;--bd:#f87171}
+@media(prefers-color-scheme:light){:root{--bg:#f3f4fb;--bg2:#dfe3fa;--pn:#fff;--ink:#1a1f3a;--mut:#667099;--ln:#dde1f1;--ug:#0d9488;--pg:#4f5fe0;--adv:#e11d48;--ok:#059669;--wn:#d97706;--bd:#dc2626}}
+*{box-sizing:border-box}body{margin:0;font:14px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;background:radial-gradient(1100px 520px at 12% -8%,var(--bg2),var(--bg));background-attachment:fixed;color:var(--ink);min-height:100vh}
+header{padding:34px 5vw 14px}h1{margin:0;font-size:clamp(28px,4.4vw,44px);letter-spacing:-.03em;background:linear-gradient(90deg,var(--ug),var(--pg),var(--adv));-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:var(--mut);margin:2px 0 18px}.stats{display:flex;gap:12px;flex-wrap:wrap}
+.stat{background:var(--pn);border:1px solid var(--ln);border-radius:16px;padding:12px 18px;min-width:128px}.stat b{font-size:27px;display:block;line-height:1.15}.stat span{color:var(--mut);font-size:12px}
+nav{position:sticky;top:0;z-index:5;display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:12px 5vw;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--ln)}
+button,.btn{font:inherit;cursor:pointer;border:1px solid var(--ln);background:var(--pn);color:var(--ink);padding:6px 14px;border-radius:99px;text-decoration:none;display:inline-block}
+button:hover,.btn:hover{border-color:var(--pg)}button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.sp{flex:1}.sep{width:1px;height:22px;background:var(--ln);margin:0 4px}
+input[type=search]{font:inherit;background:var(--pn);color:var(--ink);border:1px solid var(--ln);border-radius:99px;padding:6px 14px;width:200px}
+#st{color:var(--mut);font-size:12px}main{padding:22px 5vw 70px}
+section{margin-bottom:34px}section h2{font-size:18px;margin:0 0 14px;padding-left:12px;border-left:4px solid var(--c)}section h2 small{color:var(--mut);font-weight:400;margin-left:6px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(275px,1fr));gap:14px}
+.card{background:var(--pn);border:1px solid var(--ln);border-top:3px solid var(--c);border-radius:16px;padding:16px;cursor:pointer;transition:.18s;display:flex;flex-direction:column;gap:8px}
+.card:hover{transform:translateY(-3px);box-shadow:0 14px 30px -16px var(--c)}.card h3{margin:0;font-size:16px;line-height:1.3}.card p{margin:0;color:var(--mut);font-size:12.5px}
+.top{display:flex;gap:6px;align-items:center}.pill{background:var(--c);color:#0d1120;font-weight:700;font-size:11px;padding:2px 9px;border-radius:99px;letter-spacing:.03em}
+.tier{font-size:11px;border:1px solid var(--wn);color:var(--wn);padding:1px 8px;border-radius:99px}.stars{margin-left:auto;color:var(--wn);font-size:12px;letter-spacing:1px}.stars i{font-style:normal;opacity:.25}
+.strip{display:flex;gap:2px;height:14px}.strip i{flex:1;border-radius:3px;min-width:3px}.strip.none{border:1px dashed var(--ln);border-radius:4px}
+.foot{display:flex;justify-content:space-between;gap:8px;color:var(--mut);font-size:11.5px;margin-top:auto}.foot .st{color:var(--ink);background:var(--bg2);padding:0 8px;border-radius:99px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}.chip{display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:2px 10px;border-radius:99px;border:1px solid var(--ln);background:var(--bg);color:var(--ink);cursor:pointer}
+.chip:before{content:"";width:8px;height:8px;border-radius:50%;background:var(--c,var(--mut))}.chip:hover{border-color:var(--c,var(--pg))}.chip.sm{font-size:11px;padding:0 8px}
+.bdg{font-size:11px;padding:1px 9px;border-radius:99px;border:1px solid currentColor;white-space:nowrap}.ok{color:var(--ok)}.warn{color:var(--wn)}.un{color:var(--mut)}.na{color:var(--pg)}
+.wrap{overflow-x:auto;background:var(--pn);border:1px solid var(--ln);border-radius:18px;padding:10px}svg{display:block;min-width:900px;width:100%}svg text{fill:var(--ink);font-size:12px}
+.lk{fill:none;opacity:.3;transition:.15s}.nd{cursor:pointer}.dim .lk{opacity:.04}.dim .lk.on{opacity:.9}.dim .nd{opacity:.18}.dim .nd.on{opacity:1}.hint{color:var(--mut);margin:0 0 12px}
+#bk{position:fixed;inset:0;background:#0009;opacity:0;pointer-events:none;transition:.2s;z-index:15}#bk.open{opacity:1;pointer-events:auto}
+#dr{position:fixed;top:0;right:0;height:100%;width:min(640px,100%);transform:translateX(100%);transition:.26s;background:var(--bg);border-left:1px solid var(--ln);overflow:auto;padding:28px;z-index:20}#dr.open{transform:none}
+#md{position:fixed;inset:0;display:none;place-items:center;z-index:30;padding:16px;background:#0006}#md.open{display:grid}
+.mbox{position:relative;background:var(--pn);border:1px solid var(--ln);border-radius:20px;padding:26px;width:min(520px,100%);max-height:88vh;overflow:auto}
+.x{position:absolute;right:14px;top:10px;border:0;background:none;font-size:26px;padding:0 8px;color:var(--mut)}
+h2.t{margin:10px 0 2px;font-size:24px;letter-spacing:-.02em}h3.s{margin:22px 0 8px;font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--mut)}.mut{color:var(--mut)}
+dl{display:grid;grid-template-columns:110px 1fr;gap:6px 12px;margin:14px 0}dt{color:var(--mut)}dd{margin:0}
+ol.lc{list-style:none;margin:0;padding:0}ol.lc li{display:flex;gap:10px;align-items:baseline;padding:7px 0;border-bottom:1px solid var(--ln);flex-wrap:wrap}ol.lc b{color:var(--mut);min-width:22px;font-weight:600}ol.lc .tp{flex:1;min-width:170px}
+.drop{max-width:540px;margin:70px auto;text-align:center;background:var(--pn);border:2px dashed var(--ln);border-radius:22px;padding:40px}.drop code{background:var(--bg);padding:2px 8px;border-radius:6px}
+</style></head><body>
+<header><h1>Crypto Teaching Atlas</h1><div class="sub">Your module and source database, visualised · <span id="st">not loaded</span></div><div class="stats" id="stats"></div></header>
+<nav id="nav">
+<button data-v="atlas">Atlas</button><button data-v="rel">Relations</button><button data-v="src">Sources</button><span class="sep"></span>
+<button data-f="l:all">All</button><button data-f="l:ug">UG</button><button data-f="l:pg">MSc</button><button data-f="l:adv">Advanced</button><span class="sep"></span>
+<button data-f="t:all">Any tier</button><button data-f="t:1">Tier 1</button><button data-f="t:2">Tier 2</button><span class="sp"></span>
+<input type="search" id="q" placeholder="Search…"><button id="rl" title="Re-read the Excel file">↻ Reload</button><button id="op">Open .xlsx</button><input type="file" id="fi" accept=".xlsx,.xls" hidden>
+</nav>
+<main id="app"></main><div id="bk"></div><aside id="dr"></aside><div id="md"></div>
+<script>
+const FILE='cryptography_teaching_portfolio_database.xlsx',$=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const lv=l=>/PhD/.test(l)?'adv':/^UG/.test(l)?'ug':'pg',LN={ug:'Undergraduate',pg:'Postgraduate (MSc)',adv:'Advanced / Specialist'};
+let D,view='atlas',F={q:'',l:'all',t:'all'};
+const g=(r,k)=>String(r[k]??'').trim();
+function build(wb){
+ const R=n=>wb.Sheets[n]?XLSX.utils.sheet_to_json(wb.Sheets[n],{defval:''}):[];
+ const src=R('Source Library').map((r,i)=>({id:g(r,'Source ID'),name:g(r,'Repository / Course'),title:g(r,'Title'),url:g(r,'Exact URL'),use:g(r,'Best use'),avail:g(r,'Available material'),lic:g(r,'Reuse / licence status'),perm:g(r,'Reuse permission')||'unclear',c:`hsl(${(i*47+170)%360} 68% 62%)`})).filter(s=>s.id);
+ const S=Object.fromEntries(src.map(s=>[s.id,s]));
+ const lec=R('Lecture Map').map(r=>({m:g(r,'Module ID'),wk:g(r,'Week / Session'),t:g(r,'Topic'),ids:g(r,'Lecture source IDs').split(/[,;]\s*/).filter(x=>S[x]),txt:g(r,'Lecture source'),perm:g(r,'Reuse permission'),ver:g(r,'Exact slide mapping status')}));
+ const mods=R('Module Database').map(r=>({id:g(r,'Module ID'),name:g(r,'Module'),level:g(r,'Level'),type:g(r,'Type'),lik:g(r,'Likelihood'),prio:g(r,'Preparation priority'),stars:(g(r,'Reuse priority').match(/★/g)||[]).length,tier:g(r,'Tier'),topics:g(r,'Canonical topics'),u:[g(r,'Source 1 URL'),g(r,'Source 2 URL')],note:g(r,'Reuse / licence notes'),status:g(r,'Status')||'Not started'})).filter(m=>m.id);
+ mods.forEach(m=>{m.L=lec.filter(l=>l.m===m.id);m.S=new Map();m.L.forEach(l=>l.ids.forEach(i=>m.S.set(i,(m.S.get(i)||0)+1)));
+  if(!m.S.size)m.u.forEach(u=>{const s=src.find(x=>x.url&&x.url===u);if(s)m.S.set(s.id,1)})});
+ return{src,S,lec,mods}}
+async function boot(){try{const r=await fetch(FILE+'?'+Date.now(),{cache:'no-store'});if(!r.ok)throw 0;ingest(await r.arrayBuffer(),'Read '+FILE)}catch(e){D=null;$('#stats').innerHTML='';$('#app').innerHTML=`<div class=drop><h2>Load your database</h2><p class=mut>Couldn't find <code>${FILE}</code> next to this page.<br>Run <code>python3 run.py</code> in this folder (it serves the file and always reads the latest version), or open the file manually.</p><button onclick="$('#fi').click()">Open .xlsx…</button></div>`}}
+function ingest(buf,msg){D=build(XLSX.read(buf,{type:'array'}));$('#st').textContent=msg+' · '+new Date().toLocaleTimeString();render()}
+const match=m=>(!F.q||(m.id+m.name+m.topics+m.type).toLowerCase().includes(F.q))&&(F.l==='all'||lv(m.level)===F.l)&&(F.t==='all'||m.tier.includes(F.t));
+const pb=p=>`<span class="bdg ${/open|explicit/.test(p)?'ok':/attrib/.test(p)?'warn':p==='n/a'?'na':'un'}">${esc(p||'unclear')}</span>`;
+function render(){if(!D)return;
+ const L=D.lec,re=L.filter(l=>/open|explicit|attrib/.test(l.perm)).length,ve=L.filter(l=>l.ver&&!/^unverified/i.test(l.ver)).length;
+ $('#stats').innerHTML=[[D.mods.length,'modules'],[D.mods.filter(m=>m.tier==='Tier 1').length,'Tier 1 courses'],[L.length,'sessions mapped'],[D.src.length,'sources'],[re,'sessions with clear reuse'],[ve+'/'+L.length,'slides verified']].map(([a,b])=>`<div class=stat><b>${a}</b><span>${b}</span></div>`).join('');
+ document.querySelectorAll('[data-v]').forEach(b=>b.classList.toggle('on',b.dataset.v===view));
+ document.querySelectorAll('[data-f]').forEach(b=>{const[k,v]=b.dataset.f.split(':');b.classList.toggle('on',F[k]===v)});
+ $('#app').innerHTML={atlas,rel,src:srcs}[view]();}
+const dots=m=>[...m.S.keys()].map(k=>`<i title="${esc(D.S[k].name)}" style="background:${D.S[k].c}"></i>`).join('');
+function card(m){const c=lv(m.level);return `<article class=card data-mod="${esc(m.id)}" style="--c:var(--${c})"><div class=top><span class=pill>${esc(m.id)}</span>${m.tier?`<span class=tier>${esc(m.tier)}</span>`:''}<span class=stars>${'★'.repeat(m.stars)}<i>${'★'.repeat(5-m.stars)}</i></span></div><h3>${esc(m.name)}</h3><p>${esc(m.topics.split(';').slice(0,4).join(' · '))}</p>
+<div class="strip ${m.L.length?'':'none'}">${m.L.map(l=>`<i title="${esc(l.wk+'. '+l.t)}" style="background:${l.ids[0]?D.S[l.ids[0]].c:'var(--ln)'}"></i>`).join('')}</div>
+<div class=foot><span>${m.L.length?m.L.length+' sessions':'no lecture map yet'}</span><span class=st>${esc(m.status)}</span></div></article>`}
+function atlas(){return['ug','pg','adv'].map(k=>{const ms=D.mods.filter(m=>lv(m.level)===k&&match(m));return ms.length?`<section><h2 style="--c:var(--${k})">${LN[k]}<small>${ms.length}</small></h2><div class=grid>${ms.map(card).join('')}</div></section>`:''}).join('')||'<p class=mut>Nothing matches.</p>'}
+function rel(){
+ const ms=D.mods.filter(match),ids=new Set();ms.forEach(m=>m.S.forEach((_,k)=>ids.add(k)));
+ const ss=D.src.filter(s=>ids.has(s.id)),rh=30,X1=340,X2=800,H=Math.max(ms.length,1)*rh+40;
+ const y1=i=>30+i*rh,y2=i=>30+i*((ms.length-1)*rh)/Math.max(ss.length-1,1),cut=(s,n)=>s.length>n?s.slice(0,n-1)+'…':s;let p='',n='';
+ ms.forEach((m,i)=>m.S.forEach((c,k)=>{const j=ss.findIndex(s=>s.id===k);if(j>=0)p+=`<path class=lk data-m="${esc(m.id)}" data-s="${esc(k)}" d="M${X1},${y1(i)}C${X1+240},${y1(i)} ${X2-240},${y2(j)} ${X2},${y2(j)}" stroke="${D.S[k].c}" stroke-width="${Math.min(1+c*.45,7)}"/>`}));
+ ms.forEach((m,i)=>n+=`<g class=nd data-k=m data-id="${esc(m.id)}" data-mod="${esc(m.id)}"><circle cx=${X1} cy=${y1(i)} r=6 fill="var(--${lv(m.level)})"/><text x=${X1-14} y=${y1(i)+4} text-anchor=end>${esc(m.id)} · ${esc(cut(m.name,40))}</text></g>`);
+ ss.forEach((s,j)=>n+=`<g class=nd data-k=s data-id="${esc(s.id)}" data-src="${esc(s.id)}"><circle cx=${X2} cy=${y2(j)} r=7 fill="${s.c}"/><text x=${X2+14} y=${y2(j)+4}>${esc(cut(s.name,34))}</text></g>`);
+ return `<p class=hint>Modules (left) connect to the sources used in their lecture plan (right). Line thickness = number of sessions. Hover to trace, click to open.</p><div class=wrap><svg id=sv viewBox="0 0 1130 ${H}">${p}${n}</svg></div>`}
+function hl(e){const sv=$('#sv');if(!sv)return;const n=e&&e.closest('.nd'),on=new Set();
+ sv.querySelectorAll('.lk').forEach(l=>{const h=n&&(n.dataset.k==='m'?l.dataset.m===n.dataset.id:l.dataset.s===n.dataset.id);l.classList.toggle('on',!!h);if(h){on.add('m'+l.dataset.m);on.add('s'+l.dataset.s)}});
+ sv.classList.toggle('dim',!!n);sv.querySelectorAll('.nd').forEach(x=>x.classList.toggle('on',on.has(x.dataset.k+x.dataset.id)))}
+function srcs(){return `<div class=grid>${D.src.filter(s=>!F.q||(s.name+s.title+s.use).toLowerCase().includes(F.q)).map(s=>{const u=D.mods.filter(m=>m.S.has(s.id)),n=D.lec.filter(l=>l.ids.includes(s.id)).length;
+ return `<article class=card data-src="${esc(s.id)}" style="--c:${s.c}"><div class=top><span class=pill>${esc(s.id)}</span><span style="margin-left:auto">${pb(s.perm)}</span></div><h3>${esc(s.name)}</h3><p>${esc(s.title)}</p><div class=chips>${u.map(m=>`<span class="chip sm" style="--c:var(--${lv(m.level)})">${esc(m.id)}</span>`).join('')}</div><div class=foot><span>${n} sessions · ${u.length} modules</span><span>${s.url?'↗ link':'no URL yet'}</span></div></article>`}).join('')}</div>`}
+const chip=(s,txt)=>s?`<span class=chip style="--c:${s.c}" data-src="${esc(s.id)}">${esc(s.name)}</span>`:`<span class="chip" style="--c:var(--ln)">${esc(txt)}</span>`;
+function openMod(id){const m=D.mods.find(x=>x.id===id);if(!m)return;const c=lv(m.level);$('#md').classList.remove('open');
+ $('#dr').innerHTML=`<button class=x data-close>×</button><span class=pill style="--c:var(--${c})">${esc(m.id)}</span><h2 class=t>${esc(m.name)}</h2><div class=mut>${esc(m.level)} · ${esc(m.type)} · likelihood ${esc(m.lik)} · priority ${esc(m.prio)}</div>
+ <p style="margin:10px 0"><span style="color:var(--wn)">${'★'.repeat(m.stars)}${'☆'.repeat(5-m.stars)}</span> ${m.tier?`<span class=tier>${esc(m.tier)}</span>`:''} <span class="foot st" style="display:inline">${esc(m.status)}</span></p>
+ <h3 class=s>Topics</h3><div class=chips>${m.topics.split(/;\s*/).filter(Boolean).map(t=>`<span class=chip style="--c:var(--${c});cursor:default">${esc(t)}</span>`).join('')}</div>
+ <h3 class=s>Sources</h3><div class=chips>${[...m.S].map(([k,n])=>`<span class=chip style="--c:${D.S[k].c}" data-src="${esc(k)}">${esc(D.S[k].name)} · ${n}</span>`).join('')||'<span class=mut>None linked yet</span>'}</div>
+ ${m.note?`<h3 class=s>Reuse note</h3><div>${esc(m.note)}</div>`:''}
+ <h3 class=s>Lecture plan · ${m.L.length}</h3>${m.L.length?`<ol class=lc>${m.L.map(l=>`<li><b>${esc(l.wk)}</b><span class=tp>${esc(l.t)}${l.ver&&!/^unverified/i.test(l.ver)?' <span class=ok>✓</span>':''}</span><span class=chips>${l.ids.length?l.ids.map(i=>chip(D.S[i])).join(''):chip(null,l.txt||'—')}</span></li>`).join('')}</ol>`:'<p class=mut>No lecture map for this module yet — add rows in the “Lecture Map” sheet.</p>'}`;
+ $('#dr').classList.add('open');$('#bk').classList.add('open')}
+function openSrc(id){const s=D.S[id],u=D.mods.filter(m=>m.S.has(id));
+ $('#md').innerHTML=`<div class=mbox><button class=x data-close>×</button><span class=pill style="--c:${s.c}">${esc(s.id)}</span><h2 class=t>${esc(s.name)}</h2><div class=mut>${esc(s.title)}</div><p>${pb(s.perm)}</p>
+ <dl><dt>Best for</dt><dd>${esc(s.use)||'—'}</dd><dt>Material</dt><dd>${esc(s.avail)||'—'}</dd><dt>Licence status</dt><dd>${esc(s.lic)||'—'}</dd></dl>
+ ${s.url?`<a class=btn href="${esc(s.url)}" target=_blank rel=noopener>Open source ↗</a>`:'<span class=mut>No URL yet — add it in the Source Library sheet.</span>'}
+ <h3 class=s>Used in</h3><div class=chips>${u.map(m=>`<span class=chip style="--c:var(--${lv(m.level)})" data-mod="${esc(m.id)}">${esc(m.id)} · ${esc(m.name)}</span>`).join('')||'<span class=mut>No modules yet</span>'}</div></div>`;
+ $('#md').classList.add('open');$('#bk').classList.add('open')}
+const closeAll=()=>['#dr','#md','#bk'].forEach(s=>$(s).classList.remove('open'));
+document.addEventListener('click',e=>{if(e.target.id==='md')return $('#md').classList.remove('open');if(e.target.id==='bk')return closeAll();
+ const t=e.target.closest('[data-close],[data-v],[data-f],[data-src],[data-mod]');if(!t||!D&&!t.dataset.f)return;
+ if('close' in t.dataset)closeAll();else if(t.dataset.v){view=t.dataset.v;render()}else if(t.dataset.f){const[k,v]=t.dataset.f.split(':');F[k]=v;render()}
+ else if(t.dataset.src)openSrc(t.dataset.src);else openMod(t.dataset.mod)});
+document.addEventListener('keydown',e=>e.key==='Escape'&&closeAll());
+document.addEventListener('mouseover',e=>hl(e.target.closest('#sv')?e.target:null));
+$('#q').oninput=e=>{F.q=e.target.value.toLowerCase();render()};$('#rl').onclick=boot;$('#op').onclick=()=>$('#fi').click();
+const readF=f=>f&&f.arrayBuffer().then(b=>ingest(b,'Opened '+f.name));$('#fi').onchange=e=>readF(e.target.files[0]);
+addEventListener('dragover',e=>e.preventDefault());addEventListener('drop',e=>{e.preventDefault();readF(e.dataTransfer.files[0])});
+boot();
+</script></body></html>
